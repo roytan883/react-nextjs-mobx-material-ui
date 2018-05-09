@@ -39,28 +39,29 @@ const styles = theme => ({
   },
 });
 
-let __ON_SERVER__ = false
+let _isServer = false
 
 @observer
 class Index extends React.Component {
 
   static async getInitialProps({ req }) {
-    __ON_SERVER__ = !!req
-    console.log("First / page getInitialProps __ON_SERVER__ = ", __ON_SERVER__)
-    store.init(__ON_SERVER__, "MyName", 16)
+    _isServer = !!req
+    console.log(`Index page: getInitialProps isServer[${_isServer}]`)
+    if (_isServer) {
+      await store.init(true)
+    }
     return { store }
   }
 
   constructor(props) {
     super(props)
-    console.log("constructor / page __ON_SERVER__ = ", __ON_SERVER__)
-    if (!__ON_SERVER__ && store.clientInitTime == 0) {
-      console.log("constructor / page at Client")
-      let serverStoreData = props.store
-      store.init(false, serverStoreData.name, serverStoreData.age)
-      // store.setAuth()
+    console.log("Index page: constructor isServer = ", _isServer)
+    if (!_isServer && !store.clientInited) {
+      console.log("Index page: constructor at Client, init store")
+      let storeData = props.store
+      store.init(false, storeData)
       store.delayAdd(3)
-      console.log("constructor / store.isAuth = ", store.isAuth)
+      store.startClock()
     }
   }
 
@@ -110,6 +111,8 @@ class Index extends React.Component {
         <Button variant="raised" color="secondary" onClick={this.handleClick}>
           Super Secret Password
         </Button>
+        <br />
+        Now = {store.now}
         <br />
         <Link href={{ pathname: '/page2', query: { name: 'Zeit' } }}>
           <Button variant="raised" color={store.age > 17 ? "secondary" : "primary"}>

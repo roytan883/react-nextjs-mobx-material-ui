@@ -2,28 +2,52 @@ import { action, observable } from 'mobx'
 
 class Store {
   @observable isServer = false
+  @observable serverInitTime = 0
+  @observable serverInited = false
+
+  @observable isClient = false
   @observable clientInitTime = 0
+  @observable clientInited = false
+
   @observable isAuth = false
   @observable name = "name-default"
   @observable age = 0
   @observable list = []
 
+  @observable now = ""
+
   constructor() {
     console.log("new Store with: ", arguments)
   }
 
-  @action init = (isServer, name, age) => {
-    if (this.clientInitTime !== 0) {
-      console.log("init Store error: already inited")
+  @action init = async (isServer, storeData) => {
+    if (isServer && this.serverInited) {
+      console.log("init Store[server] error: already inited")
       return
     }
-    console.log("init Store with: ", arguments)
-    this.isServer = isServer
-    if (!isServer) {
-      this.clientInitTime = Date.now()
+    if (!isServer && this.clientInited) {
+      console.log("init Store[client] error: already inited")
+      return
     }
-    this.name = name
-    this.age = age
+    console.log("init Store with: isServer = ", isServer)
+    console.log("init Store with: storeData = ", storeData)
+    if (isServer) {
+      this.isServer = true
+      this.isClient = false
+      this.serverInitTime = Date.now()
+      this.serverInited = true
+      //TODO: init data on server
+      this.name = "MyName"
+      this.age = 16
+    }
+    else {
+      this.isServer = false
+      this.isClient = true
+      this.clientInitTime = Date.now()
+      this.clientInited = true
+      this.name = storeData.name
+      this.age = storeData.age
+    }
   }
 
   @action setAuth = () => {
@@ -42,6 +66,12 @@ class Store {
     setTimeout(() => {
       this.age += num
     }, 3000)
+  }
+
+  @action startClock = () => {
+    setInterval(() => {
+      this.now = "" + new Date().toLocaleTimeString()
+    }, 1000)
   }
 }
 
