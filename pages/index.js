@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import Button from 'material-ui/Button';
 import Dialog, {
@@ -10,11 +11,13 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
-import withRoot from '../src/withRoot';
+import withRoot from '../utils/withRoot';
 
 import Link from 'next/link'
 
 import store from '../data/store'
+
+import Switch from 'material-ui/Switch';
 
 const styles = theme => ({
   root: {
@@ -38,11 +41,13 @@ class Index extends React.Component {
   constructor(props) {
     super(props)
     console.log("constructor / page __ON_SERVER__ = ", __ON_SERVER__)
-    if (!__ON_SERVER__) {
+    if (!__ON_SERVER__ && store.clientInitTime == 0) {
       console.log("constructor / page at Client")
       let serverStoreData = props.store
       store.init(false, serverStoreData.name, serverStoreData.age)
+      // store.setAuth()
       store.delayAdd(3)
+      console.log("constructor / store.isAuth = ", store.isAuth)
     }
   }
 
@@ -63,6 +68,7 @@ class Index extends React.Component {
   };
 
   render() {
+    console.log("index render() store.isAuth = ", store.isAuth)
     const { classes } = this.props;
     const { open } = this.state;
 
@@ -93,8 +99,23 @@ class Index extends React.Component {
         </Button>
         <br />
         <Link href={{ pathname: '/page2', query: { name: 'Zeit' } }}>
+          <Button variant="raised" color={store.age > 17 ? "secondary" : "primary"}>
+            页面2 age={"" + store.age}
+          </Button>
+        </Link>
+        <br />
+        Auth =<Switch
+          checked={store.isAuth}
+          onClick={(event, checked) => {
+            store.isAuth = !store.isAuth
+          }}
+          value="checkedB"
+          color="primary"
+        />
+        <br />
+        <Link href={{ pathname: '/page3', query: { name: 'Zeit' } }}>
           <Button variant="raised" color="primary">
-            页面2
+            仅Auth状态才能跳转的页面Page3
           </Button>
         </Link>
       </div>
