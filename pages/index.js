@@ -19,6 +19,19 @@ import store from '../data/store'
 
 import Switch from 'material-ui/Switch';
 
+// import Router from 'next/router'
+
+// Router.beforePopState(({ url, asPath, options }) => {
+//   // I only want to allow these two routes!
+//   if (asPath != "/" && store.isAuth != true) {
+//     // Have SSR render bad routes as a 404.
+//     // window.location.href = as
+//     return false
+//   }
+
+//   return true
+// });
+
 const styles = theme => ({
   root: {
     textAlign: 'center',

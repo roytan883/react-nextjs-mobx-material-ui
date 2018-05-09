@@ -8,8 +8,16 @@ class Store {
   @observable age = 0
   @observable list = []
 
-  @action init = (isServer, name, age) => {
+  constructor() {
     console.log("new Store with: ", arguments)
+  }
+
+  @action init = (isServer, name, age) => {
+    if (this.clientInitTime !== 0) {
+      console.log("init Store error: already inited")
+      return
+    }
+    console.log("init Store with: ", arguments)
     this.isServer = isServer
     if (!isServer) {
       this.clientInitTime = Date.now()
