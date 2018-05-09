@@ -11,6 +11,10 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import withRoot from '../src/withRoot';
 
+import Link from 'next/link'
+
+import store from '../data/store'
+
 const styles = theme => ({
   root: {
     textAlign: 'center',
@@ -18,7 +22,27 @@ const styles = theme => ({
   },
 });
 
+let __ON_SERVER__ = false
+
 class Index extends React.Component {
+
+  static async getInitialProps({ req }) {
+    __ON_SERVER__ = !!req
+    console.log("First / page getInitialProps __ON_SERVER__ = ", __ON_SERVER__)
+    store.init(__ON_SERVER__, "MyName", 16)
+    return { store }
+  }
+
+  constructor(props) {
+    super(props)
+    console.log("constructor / page __ON_SERVER__ = ", __ON_SERVER__)
+    if (!__ON_SERVER__) {
+      console.log("constructor / page at Client")
+      let serverStoreData = props.store
+      store.init(false, serverStoreData.name, serverStoreData.age)
+    }
+  }
+
   state = {
     open: false,
   };
@@ -58,9 +82,18 @@ class Index extends React.Component {
         <Typography variant="subheading" gutterBottom>
           example project
         </Typography>
+        <Typography variant="subheading" gutterBottom>
+          isServer = {"" + store.isServer} name = {"" + store.name} age = {"" + store.age}
+        </Typography>
         <Button variant="raised" color="secondary" onClick={this.handleClick}>
           Super Secret Password
         </Button>
+        <br />
+        <Link href={{ pathname: '/page2', query: { name: 'Zeit' } }}>
+          <Button variant="raised" color="primary">
+            页面2
+          </Button>
+        </Link>
       </div>
     );
   }
