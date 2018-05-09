@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { observer } from 'mobx-react'
 import Button from 'material-ui/Button';
 import Dialog, {
   DialogTitle,
@@ -24,6 +25,7 @@ const styles = theme => ({
 
 let __ON_SERVER__ = false
 
+@observer
 class Index extends React.Component {
 
   static async getInitialProps({ req }) {
@@ -40,6 +42,7 @@ class Index extends React.Component {
       console.log("constructor / page at Client")
       let serverStoreData = props.store
       store.init(false, serverStoreData.name, serverStoreData.age)
+      store.delayAdd(3)
     }
   }
 

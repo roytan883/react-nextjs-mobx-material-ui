@@ -15,6 +15,12 @@ class Store {
   @action loadMoreList = (more) => {
     this.list = this.list.concat(more)
   }
+
+  @action delayAdd = (num) => {
+    setTimeout(() => {
+      this.age += num
+    }, 3000)
+  }
 }
 
 const store = new Store()
