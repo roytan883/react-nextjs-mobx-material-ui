@@ -109,7 +109,7 @@ class Index extends React.Component {
           isServer = {"" + store.isServer} name = {"" + store.name} age = {"" + store.age}
         </Typography>
         <Button variant="raised" color="secondary" onClick={this.handleClick}>
-          Super Secret Password
+          Open Dialog
         </Button>
         <br />
         Now = {store.now}

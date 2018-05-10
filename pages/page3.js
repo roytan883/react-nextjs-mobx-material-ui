@@ -14,9 +14,9 @@ class Page3 extends Component {
   render() {
     return (
       <div>
-        Welcome to Page3 age = {"" + store.age}
+        Welcome to Page3 = {"" + store.age}
         <br />
-        Now = {store.now}
+        Now Clock q = {store.now}
         <br />
         <Link href={{ pathname: '/', query: { name: 'haha' } }}>
           <Button variant="raised" color="primary">
